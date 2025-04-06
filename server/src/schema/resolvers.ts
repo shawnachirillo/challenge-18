@@ -3,8 +3,9 @@ import User from '../models/User';
 import { signToken } from '../services/auth';
 import { IResolvers } from '@graphql-tools/utils';
 
-const resolvers: IResolvers = {
+export const resolvers: IResolvers = {
   Query: {
+    hello: () => 'Hello, world!',
     me: async (_parent, _args, context) => {
       if (context.user) {
         const userData = await User.findById(context.user._id).select('-__v -password');
@@ -13,7 +14,6 @@ const resolvers: IResolvers = {
       throw new AuthenticationError('Not logged in');
     },
   },
-
   Mutation: {
     addUser: async (_parent, args) => {
       const user = await User.create(args);
