@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "server/server.js",
+  "type": "module",
   "scripts": {
     "start": "node server/server.js",
     "develop": "concurrently \"cd server && npm run watch\" \"cd client && npm run dev\"",
@@ -15,7 +16,10 @@
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^5.0.1",
-    "concurrently": "^8.2.0"
+    "@types/node": "^22.14.0",
+    "concurrently": "^8.2.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@graphql-tools/utils": "^10.8.6",

@@ -1,13 +1,15 @@
 // import express from 'express';
 import path from 'path';
 import { ApolloServer } from 'apollo-server-express';
-import db from './config/connection';
-import { typeDefs, resolvers } from './schema';
-import { authMiddleware, signToken } from './services/auth';
+import db from './config/connection.js';
+import { typeDefs, resolvers } from './schema/index.js';
+import { authMiddleware, signToken } from './services/auth.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import express from 'express';
 import type { Express } from 'express';
+
+console.log("Server loaded!");
 
 const app: Express = express();
 
