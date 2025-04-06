@@ -1,6 +1,11 @@
 import type { Request, Response } from 'express';
 import express from 'express';
 const router = express.Router();
+import typeDefs from '../schema/typeDefs';
+import resolvers from '../schema/resolvers';
+
+export { typeDefs, resolvers };
+
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

@@ -9,6 +9,10 @@ interface JwtPayload {
   username: string;
   email: string,
 }
+const authMiddleware = ({ req }) => {
+  return { user: userData }; // Return user in context
+};
+
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;

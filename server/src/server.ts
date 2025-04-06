@@ -1,21 +1,46 @@
-import express from 'express';
-import path from 'node:path';
-import db from './config/connection.js';
-import routes from './routes/index.js';
+// import express from 'express';
+import path from 'path';
+import { ApolloServer } from 'apollo-server-express';
+import db from './config/connection';
+import { typeDefs, resolvers } from './schema';
+import { authMiddleware } from './utils/auth';
+import express, { Application } from 'express';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+
+const app: Application = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+const startApolloServer = async () => {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: authMiddleware,
+  });
 
-// if we're in production, serve client/build as static assets
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
-}
+  await server.start();
+  server.applyMiddleware({ app });
 
-app.use(routes);
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
 
-db.once('open', () => {
-  app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
-});
+  if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../client/build')));
+  }
+
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
+
+  db.once('open', () => {
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running at http://localhost:${PORT}${server.graphqlPath}`);
+    });
+  });
+};
+
+startApolloServer();
