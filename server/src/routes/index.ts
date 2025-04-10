@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
 import express from 'express';
 const router = express.Router();
-import typeDefs from '../schema/typeDefs';
-import resolvers from '../schema/resolvers';
+import typeDefs from '../schema/typeDefs.js';
+import resolvers from '../schema/resolvers.js';
 
 export { typeDefs, resolvers };
 
