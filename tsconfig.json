@@ -11,6 +11,8 @@
     "noEmit": true,
     "allowSyntheticDefaultImports": true
   },
+  "noImplicitAny": false,
+
   "ts-node": {
     "esm": true
   },
