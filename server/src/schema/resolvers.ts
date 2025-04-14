@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import { signToken } from '../services/auth.js';
 import { IResolvers } from '@graphql-tools/utils';
 
+
 export const resolvers: IResolvers = {
   Query: {
     hello: () => 'Hello, world!',

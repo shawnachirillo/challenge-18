@@ -10,7 +10,7 @@ import { authMiddleware } from './services/auth.js';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3003;
 const app: Express = express();
 
 app.use(express.urlencoded({ extended: false }));
