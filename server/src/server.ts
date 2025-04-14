@@ -11,7 +11,7 @@ import { authMiddleware } from './services/auth.js';
 dotenv.config();
 
 const PORT = process.env.PORT || 3003;
-const app: Express = express();
+const app: express.Application = express();
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -30,7 +30,7 @@ async function startServer() {
   });
 
   await server.start();
-  server.applyMiddleware({ app, path: '/graphql' });
+  const app = express();
 
   app.listen(PORT, () => {
     console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);

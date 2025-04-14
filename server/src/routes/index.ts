@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import express from 'express';
 const router = express.Router();
 import typeDefs from '../schema/typeDefs.js';
-import resolvers from '../schema/resolvers.js';
+import { resolvers } from '../schema/resolvers.js';
 
 export { typeDefs, resolvers };
 
