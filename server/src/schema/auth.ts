@@ -1,16 +1,16 @@
+// server/src/services/auth.ts
 import jwt from 'jsonwebtoken';
 import { Request } from 'express';
 
-const secret = 'mysecretsshhhhh';
+const secret = process.env.JWT_SECRET || 'supersecretkey';
 const expiration = '2h';
 
-export function signToken({ username, email, _id }: any) {
+export function signToken(username: string, email: string, _id: string) {
   const payload = { username, email, _id };
   return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
 }
 
 export function authMiddleware({ req }: { req: Request }) {
-  // Get token from headers
   let token = req.body.token || req.query.token || req.headers.authorization;
 
   if (req.headers.authorization) {
@@ -22,8 +22,8 @@ export function authMiddleware({ req }: { req: Request }) {
   try {
     const { data }: any = jwt.verify(token, secret);
     (req as any).user = data;
-  } catch (err) {
-    console.error('Invalid token');
+  } catch {
+    console.warn('Invalid token');
   }
 
   return req;

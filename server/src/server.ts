@@ -1,14 +1,40 @@
-import express from 'express';
+// server/src/server.ts
+import express, { Express } from 'express';
+import { ApolloServer } from 'apollo-server-express';
+import dotenv from 'dotenv';
 
-console.log('🟢 Minimal server.ts is running');
+import typeDefs from './schema/typeDefs.js';
+import { resolvers } from './schema/resolvers.js';
+import { connectDB } from './config/connection.js';
+import { authMiddleware } from './services/auth.js';
 
-const app = express();
-const PORT = 3002;
+dotenv.config();
 
-app.get('/', (_req, res) => {
-  res.send('✅ Hello Shawna!');
+const PORT = process.env.PORT || 3002;
+const app: Express = express();
+
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use((req, res, next) => {
+  authMiddleware({ req });
+  next();
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Listening at http://localhost:${PORT}`);
-});
+async function startServer() {
+  await connectDB();
+
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: ({ req }) => ({ user: (req as any).user }),
+  });
+
+  await server.start();
+  server.applyMiddleware({ app, path: '/graphql' });
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
+  });
+}
+
+startServer();

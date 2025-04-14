@@ -33,6 +33,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    hello: String
     me: User
   }
 
@@ -43,7 +44,5 @@ const typeDefs = gql`
     removeBook(bookId: String!): User
   }
 `;
-// Removed duplicate typeDefs declaration
-
 
 export default typeDefs;

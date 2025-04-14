@@ -17,7 +17,11 @@ export const resolvers: IResolvers = {
   Mutation: {
     addUser: async (_parent, args) => {
       const user = await User.create(args);
-      const token = signToken(user.username, user.password, user._id);
+      const token = signToken(
+        JSON.stringify({ username: user.username, email: user.email, _id: user._id }),
+        process.env.JWT_SECRET || (() => { throw new Error('JWT_SECRET is not defined in environment variables'); })(),
+        { expiresIn: '1h' }
+      );
       return { token, user };
     },
 
@@ -32,7 +36,11 @@ export const resolvers: IResolvers = {
         throw new AuthenticationError('Incorrect password');
       }
 
-      const token = signToken(user.username, user.password, user._id);
+      const token = signToken(
+        JSON.stringify({ username: user.username, email: user.email, _id: user._id }),
+        process.env.JWT_SECRET || (() => { throw new Error('JWT_SECRET is not defined in environment variables'); })(),
+        { expiresIn: '1h' }
+      );
       return { token, user };
     },
 
@@ -61,5 +69,3 @@ export const resolvers: IResolvers = {
     },
   },
 };
-
-export default resolvers;
