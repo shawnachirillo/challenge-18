@@ -7,7 +7,7 @@
     "start": "node dist/server.js",
     "watch": "nodemon dist/server.js",
     "build": "tsc",
-    "dev:server": "ts-node --esm --project server/tsconfig.server.json server/src/server.ts"
+    "dev:server": "tsx src/server.ts"
   },
   "dependencies": {
     "apollo-server-express": "^3.13.0",
@@ -17,7 +17,8 @@
     "graphql": "^16.10.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.0",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3"
   },
   "devDependencies": {
     "@graphql-tools/utils": "^10.8.6",
