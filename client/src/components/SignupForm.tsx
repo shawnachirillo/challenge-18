@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-
+import { User } from '../models/User';
 import { createUser } from '../utils/API';
 import Auth from '../utils/auth';
-import type { User } from '../models/User';
 
-// biome-ignore lint/correctness/noEmptyPattern: <explanation>
-const SignupForm = ({}: { handleModalClose: () => void }) => {
-  // set initial form state
-  const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: '', savedBooks: [] });
-  // set state for form validation
-  const [validated] = useState(false);
-  // set state for alert
+const SignupForm = () => {
+  const [userFormData, setUserFormData] = useState<User>({
+    username: '',
+    email: '',
+    password: '',
+  });
+
+  const [validated, setValidated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -22,41 +22,53 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
 
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;
+
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
+      setValidated(true);
+      return;
     }
 
     try {
-      const response = await createUser(userFormData);
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: userFormData.username,
+          email: userFormData.email,
+          password: userFormData.password,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error('something went wrong!');
       }
 
-      const { token } = await response.json();
+      const createUserResponse = await createUser(userFormData);
+      if (!createUserResponse.ok) {
+        throw new Error('something went wrong!');
+      }
+
+      const { token } = await createUserResponse.json();
       Auth.login(token);
+
+      setUserFormData({
+        username: '',
+        email: '',
+        password: '',
+      });
     } catch (err) {
       console.error(err);
       setShowAlert(true);
     }
-
-    setUserFormData({
-      username: '',
-      email: '',
-      password: '',
-      savedBooks: [],
-    });
   };
 
   return (
     <>
-      {/* This is needed for the validation functionality above */}
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
-        {/* show alert if server response is bad */}
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
           Something went wrong with your signup!
         </Alert>
@@ -97,8 +109,8 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
             value={userFormData.password || ''}
             required
           />
-          <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
         </Form.Group>
+
         <Button
           disabled={!(userFormData.username && userFormData.email && userFormData.password)}
           type='submit'

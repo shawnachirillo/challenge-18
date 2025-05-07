@@ -1,12 +1,12 @@
 import { AuthenticationError } from 'apollo-server-express';
-import User from '../models/User';
-import { signToken } from '../services/auth';
+import User from '../models/User.js';
+import { signToken } from '../services/auth.js';
 import { IResolvers } from '@graphql-tools/utils';
 
 export const resolvers: IResolvers = {
   Query: {
     hello: () => 'Hello, world!',
-    me: async (_parent, _args, context) => {
+    me: async (_parent: any, _args: any, context: any) => {
       if (context.user) {
         const userData = await User.findById(context.user._id).select('-__v -password');
         return userData;
